@@ -30,11 +30,11 @@ io.sockets.on('connection', function(socket) {
   socket.on('message', function(message) {
     socket.get('pseudo', function(error, name) {
       var data = {
-        'message': message,
+       'message': message,
         pseudo: name
       };
       socket.broadcast.emit('message', data);
-      console.log("user " + name + " send this : " + message);
+      console.log("user " + name + " sent this : " + message);
     })
   });
 });
