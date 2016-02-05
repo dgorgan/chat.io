@@ -1,14 +1,39 @@
-var http = require('http');
+// var WebSocketServer = require("ws").Server
 var express = require('express')
-app = express();
-
+var app = express();
+var server = require('http').createServer(app)
+var io = require('socket.io').listen(server);
 var jade = require('jade');
-var io = require('socket.io');
-var server = http.createServer(app);
+var port = process.env.PORT || 3000
+server.listen(port);
+// io = io.listen(server);
 
-io = io.listen(server);
-server.listen(3000);
+app.use(express.static(__dirname + '/public'));
 
+console.log("http server listening on %d", port)
+
+
+var wss = new WebSocketServer({server: server})
+console.log("websocket server created")
+
+wss.on("connection", function(ws) {
+  var id = setInterval(function() {
+    ws.send(JSON.stringify(new Date()), function() {  })
+  }, 1000)
+
+  console.log("websocket connection open")
+
+  ws.on("close", function() {
+    console.log("websocket connection close")
+    clearInterval(id)
+  })
+})
+
+
+// io.on('connection', function () {
+//   io.set("transports", ["xhr-polling"]);
+//   io.set("polling duration", 10);
+// });
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -16,7 +41,6 @@ app.set("view options", {
   layout: false
 });
 
-app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('home.jade');
@@ -24,8 +48,12 @@ app.get('/', function(req, res) {
 
 io.sockets.on('connection', function(socket) {
   socket.on('setPseudo', function(data) {
-    socket.set('pseudo', data);
+    socket.pseudo = data;
   });
+
+//   socket.on('set nickname', function (name) {
+//   socket.nickname = name;
+// });
 
   socket.on('message', function(message) {
     socket.get('pseudo', function(error, name) {

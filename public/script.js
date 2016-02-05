@@ -1,4 +1,12 @@
 var socket = io.connect();
+var host = location.origin.replace(/^http/, 'ws')
+var ws = new WebSocket(host);
+
+ws.onmessage = function (event) {
+  var li = document.createElement('li');
+  li.innerHTML = JSON.parse(event.data);
+  document.querySelector('#chatEntries').appendChild(li);
+};
 
 function addMessage(msg, pseudo) {
     $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');

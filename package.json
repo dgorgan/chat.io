@@ -4,9 +4,10 @@
   "description": "real time web chat app built with node.js and socket.io ",
   "main": "server.js",
   "dependencies": {
-    "socket.io": "^1.4.5",
     "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "socket.io": "^1.4.5",
+    "ws": "^1.0.1"
   },
   "devDependencies": {},
   "scripts": {
